@@ -169,7 +169,7 @@
   </section>
 
   <footer>
-    © Sosovalue Shop — Built for cryptowithAryanog
+    © Sosovalue Shop — Built with cryptowithAryanog
   </footer>
 </main>
 
@@ -187,7 +187,7 @@
 
   const $ = sel => document.querySelector(sel);
 
-  // render products
+  // Render products
   function renderProducts(){
     const container = $('#products');
     const sidebar = $('#productsSidebar');
@@ -195,7 +195,10 @@
     sidebar.innerHTML = '';
     PRODUCTS.forEach(p=>{
       const el = document.createElement('div'); el.className='product';
-      el.innerHTML = `<h3>${p.title}</h3><div class="meta">${p.displayPrice}</div><div class="meta">Min: ${p.min.toLocaleString()} • Max: ${p.max.toLocaleString()}</div><button class="btn" onclick="openBuy('${p.id}')">Buy</button>`;
+      el.innerHTML = `<h3>${p.title}</h3>
+        <div class="meta">${p.displayPrice}</div>
+        <div class="meta">Min: ${p.min.toLocaleString()} • Max: ${p.max.toLocaleString()}</div>
+        <button class="btn" onclick="openBuy('${p.id}')">Buy</button>`;
       container.appendChild(el);
 
       const el2 = el.cloneNode(true);
@@ -204,7 +207,7 @@
     });
   }
 
-  // modals
+  // Modal
   function openModal(type){
     const root = $('#modalRoot');
     if(type==='signup'){
@@ -212,51 +215,97 @@
         <div class="field"><label>Username</label><input id="su_username" /></div>
         <div class="field"><label>Password</label><input id="su_password" type="password" /></div>
         <div class="field"><label>Confirm Password</label><input id="su_confirm" type="password" /></div>
-        <div style="margin-top:12px;display:flex;gap:8px"><button onclick="signup()" class="btn">Create Account</button><button onclick="closeModal()" class="ghost">Cancel</button></div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button onclick="signup()" class="btn">Create Account</button>
+          <button onclick="closeModal()" class="ghost">Cancel</button>
+        </div>
       `);
     } else if(type==='login'){
       root.innerHTML = modalHtml('Sign In', `
         <div class="field"><label>Username</label><input id="li_username" /></div>
         <div class="field"><label>Password</label><input id="li_password" type="password" /></div>
-        <div style="margin-top:12px;display:flex;gap:8px"><button onclick="login()" class="btn">Sign In</button><button onclick="closeModal()" class="ghost">Cancel</button></div>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button onclick="login()" class="btn">Sign In</button>
+          <button onclick="closeModal()" class="ghost">Cancel</button>
+        </div>
       `);
     }
   }
 
   function modalHtml(title, inner){
-    return `<div class="modal-backdrop"><div class="modal"><h3 style=\"margin:0 0 8px 0\">${title}</h3>${inner}</div></div>`;
+    return `<div class="modal-backdrop"><div class="modal"><h3 style="margin:0 0 8px 0">${title}</h3>${inner}</div></div>`;
   }
 
   window.openModal = openModal;
   window.closeModal = ()=>{document.getElementById('modalRoot').innerHTML=''};
 
-  // signup/login logic
+  // ---------------- SIGNUP ----------------
   window.signup = async function(){
-    const u = document.getElementById('su_username').value.trim();
-    const p = document.getElementById('su_password').value;
-    const c = document.getElementById('su_confirm').value;
-    if(!u || !p){alert('username & password required');return}
-    if(p!==c){alert('passwords do not match');return}
+    const u = $('#su_username').value.trim();
+    const p = $('#su_password').value;
+    const c = $('#su_confirm').value;
+    if(!u || !p){alert('Username & password required'); return;}
+    if(p!==c){alert('Passwords do not match'); return;}
+
     try{
-      const res = await fetch('/signup', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({username:u,password:p})});
+      const res = await fetch('/register', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({username:u,password:p})
+      });
       const data = await res.json();
-      if(data.token){ sessionStorage.setItem('sv_token',data.token); refreshUI(); closeModal(); showSection('dashboard'); return; }
-      alert(data.message||'Signup failed');
-    }catch(e){alert('Signup error');}
+      if(res.ok){
+        alert('Signup successful! Please login.');
+        closeModal();
+      } else alert(data.error||'Signup failed');
+    } catch(e){alert('Signup error'); console.error(e);}
   }
 
+  // ---------------- LOGIN ----------------
   window.login = async function(){
-    const u = document.getElementById('li_username').value.trim();
-    const p = document.getElementById('li_password').value;
+    const u = $('#li_username').value.trim();
+    const p = $('#li_password').value;
+    if(!u || !p){alert('Username & password required'); return;}
+
     try{
-      const res = await fetch('/login', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({username:u,password:p})});
+      const res = await fetch('/login', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({username:u,password:p})
+      });
       const data = await res.json();
-      if(data.token){ sessionStorage.setItem('sv_token',data.token); refreshUI(); closeModal(); showSection('dashboard'); return; }
-      alert(data.message||'Login failed');
-    }catch(e){alert('Login error');}
+      if(res.ok && data.user_id){
+        sessionStorage.setItem('sv_user_id', data.user_id);
+        sessionStorage.setItem('sv_balance', data.balance);
+        refreshUI();
+        closeModal();
+      } else alert(data.error||'Login failed');
+    } catch(e){alert('Login error'); console.error(e);}
   }
 
-  // buy flow
+  // ---------------- DASHBOARD ----------------
+  async function loadDashboard(){
+    const userId = sessionStorage.getItem('sv_user_id');
+    if(!userId) return;
+
+    try{
+      const res = await fetch(`/dashboard/${userId}`);
+      const data = await res.json();
+      $('#userWelcome').textContent = data.username||'User';
+      $('#dashBalance').textContent = `$${(data.balance||0).toFixed(2)}`;
+      $('#balanceDisplay').textContent = `$${(data.balance||0).toFixed(2)}`;
+
+      const tbody = $('#ordersTable tbody');
+      tbody.innerHTML = '';
+      (data.orders||[]).forEach(o=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML=`<td>${o.id}</td><td>${o.product}</td><td>${o.qty}</td><td>$${(o.amount||0).toFixed(2)}</td><td>${o.status}</td>`;
+        tbody.appendChild(tr);
+      });
+    } catch(e){console.error('Dashboard load error', e);}
+  }
+
+  // ---------------- BUY FLOW ----------------
   window.openBuy = function(productId){
     const prod = PRODUCTS.find(p=>p.id===productId);
     const root = $('#modalRoot');
@@ -264,97 +313,100 @@
       <div class="field"><label>Quantity (${prod.unit})</label><input id="buy_qty" type="number" value="${prod.min}" min="${prod.min}" /></div>
       <div class="field"><label>Referral Link / Code</label><input id="buy_ref" type="text" placeholder="https://sosovalue.app/ref/abcd" /></div>
       <div class="field"><label>Price</label><div id="buy_price" style="font-weight:800">$0.00</div></div>
-      <div style="margin-top:12px;display:flex;gap:8px"><button class="btn" onclick="confirmBuy('${prod.id}')">Confirm Order</button><button class="ghost" onclick="closeModal()">Cancel</button></div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn" onclick="confirmBuy('${prod.id}')">Confirm Order</button>
+        <button class="ghost" onclick="closeModal()">Cancel</button>
+      </div>
     `);
-    const qtyInput = document.getElementById('buy_qty');
-    const priceBox = document.getElementById('buy_price');
-    function compute(){priceBox.textContent=`$${(qtyInput.value*prod.pricePerUnit).toFixed(2)}`;}
-    qtyInput.addEventListener('input',compute); compute();
+
+    const qtyInput = $('#buy_qty');
+    const priceBox = $('#buy_price');
+    function compute(){ priceBox.textContent=`$${(qtyInput.value*prod.pricePerUnit).toFixed(2)}`; }
+    qtyInput.addEventListener('input',compute);
+    compute();
   }
 
   window.confirmBuy = async function(prodId){
     const prod = PRODUCTS.find(p=>p.id===prodId);
-    const qty = Number(document.getElementById('buy_qty').value)||0;
-    const ref = document.getElementById('buy_ref').value.trim();
-    if(!ref){alert('Referral link required');return;}
+    const qty = Number($('#buy_qty').value)||0;
+    const ref = $('#buy_ref').value.trim();
+    if(!ref){alert('Referral link required'); return;}
+
+    const userId = sessionStorage.getItem('sv_user_id');
+    if(!userId){alert('Please login'); return;}
+
+    const price = qty*prod.pricePerUnit;
     try{
-      const token = sessionStorage.getItem('sv_token');
-      const res = await fetch('/create-payment',{method:'POST', headers:{'content-type':'application/json','Authorization':`Bearer ${token}`}, body:JSON.stringify({amount:qty*prod.pricePerUnit, product:prodId, qty})});
+      const res = await fetch('/place-order', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({user_id:userId, product:prod.title, qty, price})
+      });
       const data = await res.json();
-      if(data.payment_url){ window.location.href = data.payment_url; return; }
-      alert(data.message||'Order failed');
-    }catch(e){alert('Order error');}
+      if(data.success){
+        alert('Order placed successfully!');
+        sessionStorage.setItem('sv_balance', data.new_balance);
+        refreshUI();
+        closeModal();
+      } else alert(data.error||'Order failed');
+    } catch(e){alert('Order error'); console.error(e);}
   }
 
-  // balance flow
+  // ---------------- BALANCE ----------------
   window.addBalanceFlow = function(){
     const root = $('#modalRoot');
     root.innerHTML = modalHtml('Add Balance', `
       <div class="field"><label>Enter USD Amount</label><input id="add_amount" type="number" min="1" value="5" /></div>
-      <div style="margin-top:12px;display:flex;gap:8px"><button class="btn" onclick="startOxaPay()">Continue</button><button class="ghost" onclick="closeModal()">Cancel</button></div>
-      <div style="margin-top:10px;color:var(--muted);font-size:13px">You will be redirected to OxaPay checkout to complete the payment. After payment completes your balance will be updated (webhook).</div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn" onclick="startOxaPay()">Continue</button>
+        <button class="ghost" onclick="closeModal()">Cancel</button>
+      </div>
+      <div style="margin-top:10px;color:var(--muted);font-size:13px">
+        You will be redirected to OxaPay checkout to complete the payment. After payment completes your balance will be updated.
+      </div>
     `);
   }
 
   window.startOxaPay = async function(){
-    const amt = Number(document.getElementById('add_amount').value)||0;
-    if(amt<1){alert('Minimum $1');return;}
-    const token = sessionStorage.getItem('sv_token');
-try{
+    const amt = Number($('#add_amount').value)||0;
+    if(amt<1){alert('Minimum $1'); return;}
+    const userId = sessionStorage.getItem('sv_user_id');
+    if(!userId){alert('Please login'); return;}
+
+    try{
       const res = await fetch('/create-payment', {
         method:'POST',
-        headers:{'content-type':'application/json','Authorization':`Bearer ${token}`},
-        body:JSON.stringify({amount:amt})
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({user_id:userId, amount:amt})
       });
       const data = await res.json();
-      if(data.payment_url){ window.location.href = data.payment_url; return; }
-      alert(data.message||'Payment creation failed');
-    }catch(e){alert('Payment error');}
+      if(data.payment_url){ window.location.href = data.payment_url; }
+      else alert(data.warning || 'Payment creation failed');
+    } catch(e){alert('Payment error'); console.error(e);}
   }
 
-  // refresh UI after login/signup
+  // ---------------- REFRESH UI ----------------
   function refreshUI(){
-    const token = sessionStorage.getItem('sv_token');
-    if(token){
+    const userId = sessionStorage.getItem('sv_user_id');
+    if(userId){
       $('#nav-signin').style.display='none';
       $('#nav-signup').style.display='none';
       showSection('dashboard');
       loadDashboard();
-    }else{
+    } else {
       $('#nav-signin').style.display='inline-block';
       $('#nav-signup').style.display='inline-block';
       showSection('home');
     }
   }
 
-  // load dashboard data
-  async function loadDashboard(){
-    const token = sessionStorage.getItem('sv_token');
-    if(!token)return;
-    try{
-      const res = await fetch('/dashboard', {headers:{'Authorization':`Bearer ${token}`}});
-      const data = await res.json();
-      $('#userWelcome').textContent = data.username||'User';
-      $('#dashBalance').textContent = `$${(data.balance||0).toFixed(2)}`;
-      $('#balanceDisplay').textContent = `$${(data.balance||0).toFixed(2)}`;
-      const tbody = document.querySelector('#ordersTable tbody');
-      tbody.innerHTML = '';
-      (data.orders||[]).forEach(o=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML=`<td>${o.id}</td><td>${o.product}</td><td>${o.qty}</td><td>$${o.price.toFixed(2)}</td><td>${o.status}</td>`;
-        tbody.appendChild(tr);
-      });
-    }catch(e){console.log('Dashboard load error',e);}
-  }
-
-  // section switch
   window.showSection = function(id){
     document.querySelectorAll('main section').forEach(s=>s.style.display='none');
     const sec = document.getElementById(id);
     if(sec) sec.style.display='block';
   }
 
-  // initial load
+  // Initial load
   window.addEventListener('load',()=>{
     renderProducts();
     refreshUI();
@@ -362,7 +414,7 @@ try{
   });
 
 })();
-</script>
+                               </script>
 
 </body>
 </html>
