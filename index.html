@@ -294,7 +294,7 @@
   btn.innerHTML = `<span class="spinner"></span> Creating account...`;
 
   try{
-    const res = await fetch(`${API}/register`, {
+    const res = await fetch(`https://bbblacksmith.pythonanywhere.com/register`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({username:u,password:p})
@@ -306,7 +306,7 @@
       btn.disabled = false; btn.innerText = prev; return;
     }
 
-    const loginRes = await fetch(`${API}/login`, {
+    const loginRes = await fetch(`https://bbblacksmith.pythonanywhere.com/login`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({username:u,password:p})
@@ -351,7 +351,7 @@
   btn.innerHTML = `<span class="spinner"></span> Signing in...`;
 
   try{
-    const res = await fetch(`${API}/login`, {
+    const res = await fetch(`https://bbblacksmith.pythonanywhere.com/login`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({username:u,password:p})
@@ -495,7 +495,7 @@
   btn.innerHTML = `<span class="spinner"></span> Placing order...`;
 
   try{
-    const res = await fetch(`${API}/place-order`, {
+    const res = await fetch(`https://bbblacksmith.pythonanywhere.com/place-order`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({user_id:userId, product:prod.title, qty, price})
