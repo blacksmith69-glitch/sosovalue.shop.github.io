@@ -14,20 +14,17 @@
     html,body{height:100%}
     body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:var(--bg); color:#fff;-webkit-font-smoothing:antialiased}
 
-    /* Loader */
     #loader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:60}
     .logo{font-weight:800;letter-spacing:6px;font-size:28px}
     .pulse{animation:pulse 1.4s infinite}
     @keyframes pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
 
-    /* Layout */
     header{position:fixed;top:0;left:0;right:0;height:72px;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter:blur(4px);z-index:40}
     .brand{display:flex;gap:12px;align-items:center}
     .brand .logo-mini{width:44px;height:44;border-radius:10px;background:linear-gradient(90deg,#0ff 0%, #08f 100%);display:inline-flex;align-items:center;justify-content:center;color:#000;font-weight:800}
     nav a{color:#fff;margin-left:14px;text-decoration:none;font-weight:600}
 
     .container{max-width:var(--maxw);margin:110px auto;padding:24px}
-
     .hero{display:flex;flex-direction:column;gap:18px}
     .hero h1{font-size:40px;margin:0}
     .hero p{margin:0;color:var(--muted)}
@@ -37,11 +34,9 @@
     .card{background:var(--card);padding:18px;border-radius:var(--radius);box-shadow:0 6px 20px rgba(0,0,0,0.6);}
     .muted{color:var(--muted)}
 
-    /* Grid */
     .grid{display:grid;gap:18px;margin-top:22px}
     .grid.cols-2{grid-template-columns:1fr 380px}
 
-    /* Products */
     .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
     .product{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:16px;border-radius:12px}
     .product h3{margin:0 0 6px 0}
@@ -49,47 +44,32 @@
     .product .price{font-weight:800;margin-top:8px}
     .product button{margin-top:12px}
 
-    /* Dashboard */
     .dashboard{display:flex;gap:18px}
     .balance{min-width:260px}
     .orders{flex:1}
 
-    /* Modal */
     .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:50}
     .modal{width:100%;max-width:520px;padding:18px;background:linear-gradient(180deg,#0b0b0b,#0e0e0e);border-radius:12px}
     .field{margin-top:10px}
     input[type=number],input[type=text],input[type=password],textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff}
-    label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
 
-    .orders table{width:100%;border-collapse:collapse}
-    .orders th,.orders td{padding:10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03);font-size:14px}
+    .error-text{color:#ff4d4f;font-size:13px;margin-top:8px;opacity:0;transform:translateY(-4px);transition:all .18s}
+    .error-text.visible{opacity:1;transform:translateY(0)}
 
-    footer{margin:60px 0 120px;color:var(--muted);text-align:center}
+    .spinner{
+      width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);
+      border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;
+      display:inline-block;vertical-align:middle;margin-right:8px;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    /* responsive */
-    @media (max-width:900px){.grid.cols-2{grid-template-columns:1fr}.hero h1{font-size:28px}}
-    /* --- insert START --- */
-.error-text{color:#ff4d4f;font-size:13px;margin-top:8px;opacity:0;transform:translateY(-4px);transition:all .18s}
-.error-text.visible{opacity:1;transform:translateY(0)}
-.success-text{color:#39d353;font-size:13px;margin-top:8px;opacity:0;transform:translateY(-4px);transition:all .18s}
-.success-text.visible{opacity:1;transform:translateY(0)}
-
-.spinner{
-  width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;
-  animation:spin .6s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* toast */
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:rgba(0,0,0,0.85);padding:10px 14px;border-radius:10px;color:#fff;font-weight:700;z-index:70;display:none}
-#toast.success{border:2px solid rgba(57,211,83,0.12)}
-#toast.error{border:2px solid rgba(255,77,79,0.12)}
-/* --- insert END --- */
+    #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:rgba(0,0,0,0.85);padding:10px 14px;border-radius:10px;color:#fff;font-weight:700;z-index:70;display:none}
+    #toast.success{border:2px solid rgba(57,211,83,0.12)}
+    #toast.error{border:2px solid rgba(255,77,79,0.12)}
   </style>
 </head>
 <body>
 
-<!-- LOADER -->
 <div id="loader">
   <div style="text-align:center">
     <div class="logo pulse">S O S O V A L U E</div>
@@ -97,7 +77,6 @@
   </div>
 </div>
 
-<!-- HEADER -->
 <header>
   <div class="brand">
     <div class="logo-mini">SV</div>
@@ -115,361 +94,269 @@
 </header>
 
 <main class="container" id="app">
+  <!-- HOME SECTION -->
+<section id="home" class="hero">
+  <h1>Buy Sosovalue Referrals & Rebate EXP 🚀</h1>
+  <p>Automated delivery • Fast support • Trusted seller</p>
 
-  <!-- HOME -->
-  <section id="home">
-    <div class="hero">
-      <h1>Sosovalue Shop</h1>
-      <p class="muted">Biggest Seller of Sosovalue Referrals & Rebate EXP — Fast delivery • Crypto payments</p>
-      <div style="display:flex;gap:12px;margin-top:8px">
-        <button class="btn" onclick="openModal('signup')">Sign Up</button>
-        <button class="ghost" onclick="openModal('login')">Sign In</button>
-      </div>
-    </div>
-
-    <div style="margin-top:24px" class="card">
-      <h3>About Us</h3>
-      <p class="muted">Trusted seller • Fast delivery (Referral 15–25 min, Rebate 30–45 min) • Crypto payments via OxaPay • Auto order placement</p>
-    </div>
-
-    <div class="grid cols-2">
-      <div>
-        <h3 style="margin-top:18px">Products</h3>
+  <div class="grid cols-2">
+    <div>
+      <div class="card">
+        <h2>Packages</h2>
         <div class="products" id="products"></div>
       </div>
-
-      <aside class="card balance">
-        <h4>Your Balance</h4>
-        <div style="font-size:20px;font-weight:800" id="balanceDisplay">$0.00</div>
-        <div style="margin-top:10px">
-          <button class="btn" onclick="addBalanceFlow()">Add Balance</button>
-        </div>
-
-        <div style="margin-top:16px">
-          <h4 class="muted">Delivery</h4>
-          <p class="muted" style="font-size:13px">Referral starts in 15–25 minutes. Rebate EXP starts in 30–45 minutes.</p>
-        </div>
-      </aside>
     </div>
 
-  </section>
-
-  <!-- DASHBOARD -->
-  <section id="dashboard" style="display:none">
-    <div class="grid cols-2">
-      <div>
-        <div class="card">
-          <h3>Welcome, <span id="userWelcome">Guest</span></h3>
-          <div class="muted">Balance</div>
-          <div style="font-size:28px;font-weight:800" id="dashBalance">$0.00</div>
-          <div style="margin-top:12px"><button class="btn" onclick="addBalanceFlow()">Add Balance</button></div>
-        </div>
-
-        <div style="margin-top:18px" class="card orders">
-          <h4>Order History</h4>
-          <table id="ordersTable"><thead><tr><th>ID</th><th>Product</th><th>Qty</th><th>Price</th><th>Status</th></tr></thead><tbody></tbody></table>
-        </div>
+    <div>
+      <div class="card">
+        <h2>Your Dashboard</h2>
+        <div class="muted">Sign in to see balance & orders.</div>
       </div>
-
-      <aside>
-        <div class="card">
-          <h4>Quick Shop</h4>
-          <div class="products" id="productsSidebar"></div>
-        </div>
-
-        <div style="margin-top:18px" class="card">
-          <h4>Info</h4>
-          <p class="muted">All orders are charged from your USD balance. Add funds via OxaPay (you'll be redirected to the OxaPay checkout).</p>
-        </div>
-      </aside>
     </div>
-  </section>
+  </div>
+</section>
 
-  <footer>
-    © Sosovalue Shop — Built with cryptowithAryanog
-  </footer>
-</main>
+<!-- DASHBOARD -->
+<section id="dashboard" style="display:none">
+  <div class="dashboard">
+    <div class="balance card">
+      <h2>Your Balance</h2>
+      <div id="balanceDisplay">₹0</div>
+      <button class="btn" onclick="openAddFunds()">Add Funds</button>
+    </div>
 
-<!-- MODALS -->
-<div id="modalRoot"></div>
+    <div class="orders card">
+      <h2>Your Orders</h2>
+      <div id="orderList">No orders yet</div>
+    </div>
+  </div>
+</section>
+
+<!-- UNIVERSAL MODAL -->
+<div id="modal-container"></div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
 
 <script>
-(() => {
-  const API = "https://bbblacksmith.pythonanywhere.com";
-  const PRODUCTS = [
-    {id:'V0', title:'Sosovalue V0 Referral', pricePerUnit:2/1000, displayPrice:'$2 per 1,000', min:1000, max:100000000, unit:'referrals'},
-    {id:'V1', title:'Sosovalue V1 Referral', pricePerUnit:10/100, displayPrice:'$10 per 100', min:100, max:10000000, unit:'referrals'},
-    {id:'V2', title:'Sosovalue V2 Referral', pricePerUnit:15/100, displayPrice:'$15 per 100', min:50, max:1000000, unit:'referrals'},
-    {id:'REBATE', title:'Rebate EXP', pricePerUnit:1/1000000, displayPrice:'$1 per 1,000,000', min:1000000, max:1000000000, unit:'exp'}
-  ];
+// --------------------- UTILITIES ---------------------
+const API = "https://bbblacksmith.pythonanywhere.com";
 
-  const $ = sel => document.querySelector(sel);
+function $(q){ return document.querySelector(q); }
+function $$(q){ return document.querySelectorAll(q); }
 
-  // Render products (keeps original look)
-  function renderProducts(){
-    const container = $('#products');
-    const sidebar = $('#productsSidebar');
-    container.innerHTML = '';
-    sidebar && (sidebar.innerHTML = '');
-    PRODUCTS.forEach(p=>{
-      const el = document.createElement('div'); el.className='product';
-      el.innerHTML = `<h3>${p.title}</h3>
-        <div class="meta">${p.displayPrice}</div>
-        <div class="meta">Min: ${p.min.toLocaleString()} • Max: ${p.max.toLocaleString()}</div>
-        <button class="btn" onclick="openBuy('${p.id}')">Buy</button>`;
-      container.appendChild(el);
+function showToast(type,msg){
+  const el = $('#toast');
+  el.className = type;
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(()=>{ el.style.display='none'; },2600);
+}
 
-      if(sidebar){
-        const el2 = el.cloneNode(true);
-        el2.querySelector('button').onclick = ()=>openBuy(p.id);
-        sidebar.appendChild(el2);
-      }
-    });
+async function parseResponseBody(res){
+  try{ return await res.json(); }
+  catch{ return {error:"Invalid JSON"}; }
+}
+
+function showSection(id){
+  $('#home').style.display = id==='home'?'block':'none';
+  $('#dashboard').style.display = id==='dashboard'?'block':'none';
+}
+
+
+// --------------------- PRODUCT DATA ---------------------
+const PRODUCTS = [
+  {id:"ref1000", title:"1,000 Referrals", pricePerUnit:0.13, min:1000, max:20000},
+  {id:"ref5000", title:"5,000 Referrals", pricePerUnit:0.12, min:5000, max:20000},
+  {id:"ref10000",title:"10,000 Referrals",pricePerUnit:0.10,min:10000,max:20000}
+];
+
+
+// --------------------- INIT RENDER ---------------------
+window.addEventListener('load', ()=>{
+  setTimeout(()=> $('#loader').style.display='none', 600);
+  renderProducts();
+});
+
+function renderProducts(){
+  const box = $('#products');
+  box.innerHTML = PRODUCTS.map(p=>`
+    <div class="product">
+      <h3>${p.title}</h3>
+      <div class="meta">Min: ${p.min} • Max: ${p.max}</div>
+      <div class="price">₹${p.pricePerUnit}/ref</div>
+      <button class="btn" onclick="openBuy('${p.id}')">Buy</button>
+    </div>
+  `).join('');
+}
+
+
+// --------------------- MODAL HANDLER ---------------------
+function openModal(type){
+  let html = '';
+  if(type==='login'){
+    html = `
+      <div class="modal-backdrop" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+          <h2>Sign In</h2>
+          <input id="login_user" class="field" placeholder="Username">
+          <input id="login_pass" type="password" class="field" placeholder="Password">
+          <div id="login_err" class="error-text"></div>
+          <button class="btn" onclick="doLogin()">Sign In</button>
+        </div>
+      </div>`;
+  }
+  if(type==='signup'){
+    html = `
+      <div class="modal-backdrop" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+          <h2>Create Account</h2>
+          <input id="reg_user" class="field" placeholder="Username">
+          <input id="reg_pass" type="password" class="field" placeholder="Password">
+          <div id="reg_err" class="error-text"></div>
+          <button class="btn" onclick="doRegister()">Create Account</button>
+        </div>
+      </div>`;
   }
 
-  // Modal helpers
-  function modalHtml(title, inner){
-    return `<div class="modal-backdrop"><div class="modal"><h3 style="margin:0 0 8px 0">${title}</h3>${inner}</div></div>`;
-  }
-  function openModal(type){
-    const root = $('#modalRoot');
-    if(type==='signup'){
-      root.innerHTML = modalHtml('Create Account', `
-  <div class="field"><label>Username</label><input id="su_username" autocomplete="username" /></div>
-  <div class="field"><label>Password</label><input id="su_password" type="password" autocomplete="new-password" /></div>
-  <div class="field"><label>Confirm Password</label><input id="su_confirm" type="password" autocomplete="new-password" /></div>
-  <div id="signupError" class="error-text"></div>
-  <div style="margin-top:12px;display:flex;gap:8px">
-    <button class="btn" onclick="signup()" id="signupBtn">Create Account</button>
-    <button class="ghost" onclick="closeModal()" id="signupCancelBtn">Cancel</button>
-  </div>
-`);
-    } else if(type==='login'){
-      root.innerHTML = modalHtml('Sign In', `
-  <div class="field"><label>Username</label><input id="li_username" autocomplete="username" /></div>
-  <div class="field"><label>Password</label><input id="li_password" type="password" autocomplete="current-password" /></div>
-  <div id="loginError" class="error-text"></div>
-  <div style="margin-top:12px;display:flex;gap:8px">
-    <button class="btn" onclick="login()" id="loginBtn">Sign In</button>
-    <button class="ghost" onclick="closeModal()" id="loginCancelBtn">Cancel</button>
-  </div>
-`);
-    }
-  }
-  window.openModal = openModal;
-  window.closeModal = ()=>{document.getElementById('modalRoot').innerHTML='';};
+  $("#modal-container").innerHTML = html;
+}
 
-  // ---------- Helpers for nicer error reporting ----------
-  async function parseResponseBody(res){
-    const text = await res.text().catch(()=>null);
-    try{ return JSON.parse(text); } catch(e){ return text || null; }
-  }
-  function showDetailedError(action, resBody, status){
-  console.error(`${action} failed. status=${status}`, resBody);
-  const msg = (resBody && (resBody.error || resBody.message)) || (typeof resBody === 'string' ? resBody : 'Unknown error');
-  showToast('error', `${action} failed: ${msg}`, 3200);
-  }
+function closeModal(e){
+  if(!e || e.target.classList.contains('modal-backdrop'))
+    $("#modal-container").innerHTML = '';
+}
 
-  // ---------------- SIGNUP ----------------
-  window.signup = async function(){
-  const u = $('#su_username').value.trim();
-  const p = $('#su_password').value;
-  const c = $('#su_confirm').value;
-  const errBox = $('#signupError');
-  const btn = $('#signupBtn');
 
-  errBox.classList.remove('visible'); errBox.textContent = '';
+// --------------------- AUTH ---------------------
+async function doRegister(){
+  const u = $('#reg_user').value.trim();
+  const p = $('#reg_pass').value.trim();
+  const err = $('#reg_err');
 
+  err.classList.remove('visible');
   if(!u || !p){
-    errBox.textContent = "Username & password required.";
-    errBox.classList.add('visible'); navigator.vibrate?.(150); return;
+    err.textContent="All fields required";
+    err.classList.add('visible');
+    return;
   }
-  if(p !== c){
-    errBox.textContent = "Passwords do not match.";
-    errBox.classList.add('visible'); navigator.vibrate?.(150); return;
-  }
-
-  btn.disabled = true;
-  const prev = btn.innerText;
-  btn.innerHTML = `<span class="spinner"></span> Creating account...`;
 
   try{
-    const res = await fetch(`https://bbblacksmith.pythonanywhere.com/register`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+    const res = await fetch(`${API}/register`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
       body:JSON.stringify({username:u,password:p})
     });
     const body = await parseResponseBody(res);
-    if(!res.ok){
-      const msg = (body && (body.error || body.message)) || `Status ${res.status}`;
-      errBox.textContent = msg; errBox.classList.add('visible'); navigator.vibrate?.(180);
-      btn.disabled = false; btn.innerText = prev; return;
-    }
 
-    const loginRes = await fetch(`https://bbblacksmith.pythonanywhere.com/login`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({username:u,password:p})
-    });
-    const loginBody = await parseResponseBody(loginRes);
-    if(!loginRes.ok || !loginBody.user_id){
-      showDetailedError('Auto-login after signup', loginBody, loginRes.status);
-      btn.disabled = false; btn.innerText = prev; return;
-    }
-
-    sessionStorage.setItem('sv_user_id', loginBody.user_id);
-    sessionStorage.setItem('sv_username', u);
-    sessionStorage.setItem('sv_balance', loginBody.balance || 0);
-    btn.innerText = "Account Created ✓";
-    showToast('success','Account created and logged in.');
-    setTimeout(()=>{ closeModal(); refreshUI(); },700);
-
-  } catch(e){
-    console.error('Signup network/error', e);
-    errBox.textContent = "Network error. Try again."; errBox.classList.add('visible'); navigator.vibrate?.(200);
-  } finally {
-    btn.disabled = false; btn.innerText = "Create Account";
-  }
-};
-
-  // ---------------- LOGIN ----------------
-  window.login = async function(){
-  const u = $('#li_username').value.trim();
-  const p = $('#li_password').value;
-  const errBox = $('#loginError');
-  const btn = $('#loginBtn');
-
-  errBox.classList.remove('visible'); errBox.textContent = '';
-
-  if(!u || !p){
-    errBox.textContent = "Username & password required.";
-    errBox.classList.add('visible'); navigator.vibrate?.(150); return;
-  }
-
-  btn.disabled = true;
-  const prev = btn.innerText;
-  btn.innerHTML = `<span class="spinner"></span> Signing in...`;
-
-  try{
-    const res = await fetch(`https://bbblacksmith.pythonanywhere.com/login`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({username:u,password:p})
-    });
-    const body = await parseResponseBody(res);
-    if(res.ok && body.user_id){
-      sessionStorage.setItem('sv_user_id', body.user_id);
-      sessionStorage.setItem('sv_username', u);
-      sessionStorage.setItem('sv_balance', body.balance || 0);
-      showToast('success','Login successful.');
-      setTimeout(()=>{ closeModal(); refreshUI(); },450);
+    if(res.ok){
+      showToast("success","Account created!");
+      closeModal();
     } else {
-      const msg = (body && (body.error || body.message)) || `Status ${res.status}`;
-      errBox.textContent = msg; errBox.classList.add('visible'); navigator.vibrate?.(180);
+      err.textContent = body.error || "Registration failed";
+      err.classList.add("visible");
     }
-  } catch(e){
-    console.error('Login network/error', e);
-    errBox.textContent = "Network error. Try again."; errBox.classList.add('visible'); navigator.vibrate?.(200);
-  } finally {
-    btn.disabled = false; btn.innerText = prev;
+  }catch(e){
+    err.textContent="Network error";
+    err.classList.add("visible");
   }
-};
+}
 
-  // ---------------- DASHBOARD ----------------
-  async function loadDashboard(){
-    const userId = sessionStorage.getItem('sv_user_id');
-    if(!userId) return;
+async function doLogin(){
+  const u = $('#login_user').value.trim();
+  const p = $('#login_pass').value.trim();
+  const err = $('#login_err');
 
-    try{
-      const res = await fetch(`https://bbblacksmith.pythonanywhere.com/dashboard/${userId}`);
-      const body = await parseResponseBody(res);
-      if(res.ok){
-        // backend doesn't return username so use stored username
-        const username = sessionStorage.getItem('sv_username') || body.username || 'User';
-        $('#userWelcome').textContent = username;
-        // update local stored balance if backend returned it
-        if(typeof body.balance !== 'undefined'){
-          sessionStorage.setItem('sv_balance', body.balance);
-        }
-        const bal = Number(sessionStorage.getItem('sv_balance') || 0);
-        $('#dashBalance').textContent = `$${(bal||0).toFixed(2)}`;
-        $('#balanceDisplay').textContent = `$${(bal||0).toFixed(2)}`;
+  err.classList.remove('visible');
+  if(!u || !p){
+    err.textContent="Enter username and password";
+    err.classList.add("visible"); return;
+  }
 
-        const tbody = $('#ordersTable tbody');
-        tbody.innerHTML = '';
-        (body.orders || []).forEach(o=>{
-          const tr = document.createElement('tr');
-          // Some rows use 'amount' some 'price' -> safe-print
-          const price = (o.amount !== undefined) ? o.amount : (o.price !== undefined ? o.price : 0);
-          tr.innerHTML=`<td>${o.id}</td><td>${o.product || ''}</td><td>${o.qty || ''}</td><td>$${(Number(price)||0).toFixed(2)}</td><td>${o.status || ''}</td>`;
-          tbody.appendChild(tr);
-        });
+  try{
+    const res = await fetch(`${API}/login`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({username:u,password:p})
+    });
+    const body = await parseResponseBody(res);
+
+    if(res.ok){
+      sessionStorage.setItem('sv_user_id', body.user_id);
+      sessionStorage.setItem('sv_balance', body.balance);
+      showToast("success","Logged in!");
+      closeModal();
+      loadDashboard();
+      showSection('dashboard');
+    } else {
+      err.textContent = body.error || "Login failed";
+      err.classList.add("visible");
+    }
+  }catch(e){
+    err.textContent="Network error"; err.classList.add("visible");
+  }
+}
+
+
+// --------------------- DASHBOARD ---------------------
+async function loadDashboard(){
+  const uid = sessionStorage.getItem('sv_user_id');
+  if(!uid) return;
+
+  const bal = sessionStorage.getItem('sv_balance') || 0;
+  $('#balanceDisplay').textContent = `₹${bal}`;
+
+  try{
+    const res = await fetch(`${API}/orders/${uid}`);
+    const body = await parseResponseBody(res);
+
+    if(res.ok){
+      if(body.orders.length===0){
+        $('#orderList').textContent="No orders yet";
       } else {
-        showDetailedError('Load dashboard', body, res.status);
+        $('#orderList').innerHTML = body.orders.map(o=>`
+          <div class="card" style="margin-top:12px">
+            <b>${o.product}</b><br>
+            Qty: ${o.qty}<br>
+            Price: ₹${o.price}
+          </div>
+        `).join('');
       }
-    } catch(e){
-      console.error('Dashboard load error', e);
-      alert('Could not load dashboard — network error. Check console.');
     }
+  }catch(e){
+    $('#orderList').textContent="Failed to load orders.";
   }
+}
 
-  // ---------------- BUY FLOW ----------------
-  window.openBuy = function(productId){
-    const prod = PRODUCTS.find(p=>p.id===productId);
-    const root = $('#modalRoot');
-    root.innerHTML = modalHtml(`Buy — ${prod.title}`, `
-  <div class="field"><label>Quantity (${prod.unit})</label><input id="buy_qty" type="number" value="${prod.min}" min="${prod.min}" /></div>
-  <div class="field"><label>Referral Link / Code</label><input id="buy_ref" type="text" placeholder="https://sosovalue.app/ref/abcd" /></div>
-  <div class="field"><label>Price</label><div id="buy_price" style="font-weight:800">$0.00</div></div>
-  <div id="buyError" class="error-text"></div>
-  <div style="margin-top:12px;display:flex;gap:8px">
-    <button class="btn" onclick="confirmBuy('${prod.id}')" id="confirmOrderBtn">Confirm Order</button>
-    <button class="ghost" onclick="closeModal()" id="cancelOrderBtn">Cancel</button>
-  </div>
-`);
 
-    const qtyInput = $('#buy_qty');
-    const priceBox = $('#buy_price');
-    function compute(){
-      const q = Number(qtyInput.value) || 0;
-      // use same price rules as backend expects: we send exact price field as 'price'
-      let price = q * prod.pricePerUnit;
-      // for V1/V2 rounding to unit logic if you want — currently using pro-rata (keeps parity with earlier simple calculation)
-      priceBox.textContent = `$${price.toFixed(2)}`;
-    }
-    qtyInput.addEventListener('input',compute);
-    compute();
-  }
+// --------------------- BUY MODAL ---------------------
+function openBuy(productId){
+  const p = PRODUCTS.find(x=>x.id===productId);
+  $("#modal-container").innerHTML = `
+    <div class="modal-backdrop" onclick="closeModal(event)">
+      <div class="modal" onclick="event.stopPropagation()">
+        <h2>${p.title}</h2>
 
-  
+        <label>Quantity</label>
+        <input id="buy_qty" type="number" min="${p.min}" max="${p.max}" placeholder="${p.min}-${p.max}">
 
-  // ---------------- BALANCE ----------------
-  window.addBalanceFlow = function(){
-    const root = $('#modalRoot');
-    root.innerHTML = modalHtml('Add Balance', `
-      <div class="field"><label>Enter USD Amount</label><input id="add_amount" type="number" min="1" value="5" /></div>
-      <div style="margin-top:12px;display:flex;gap:8px">
-        <button class="btn" onclick="startOxaPay()">Continue</button>
-        <button class="ghost" onclick="closeModal()">Cancel</button>
+        <label style="margin-top:10px">Referral Link</label>
+        <input id="buy_ref" type="text" placeholder="Paste your referral link">
+
+        <div id="buyError" class="error-text"></div>
+
+        <button id="confirmOrderBtn" class="btn" style="margin-top:16px" onclick="confirmBuy('${p.id}')">
+          Confirm Order
+        </button>
       </div>
-      <div style="margin-top:10px;color:var(--muted);font-size:13px">
-        You will be redirected to OxaPay checkout to complete the payment. After payment completes your balance will be updated via webhook.
-      </div>
-    `);
-  }
+    </div>
+  `;
+}
 
-  window.startOxaPay = async function(){
-    const amt = Number($('#add_amount').value)||0;
-    if(amt<1){alert('Minimum $1'); return;}
-    const userId = sessionStorage.getItem('sv_user_id');
-    if(!userId){alert('Please login'); return;}
 
-    try{
-      const res = await fetch('https://bbblacksmith.pythonanywhere.com/create-payment', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({user_id:userId, amount:amt})
-      window.confirmBuy = async function(prodId){
+// --------------------- CONFIRM BUY (FIXED POSITION) ---------------------
+window.confirmBuy = async function(prodId){
   const prod = PRODUCTS.find(p=>p.id===prodId);
   const qty = Number($('#buy_qty').value)||0;
   const ref = $('#buy_ref').value.trim();
@@ -479,95 +366,106 @@
   errBox.classList.remove('visible'); errBox.textContent='';
 
   if(qty < prod.min || qty > prod.max){
-    errBox.textContent = `Quantity must be between ${prod.min.toLocaleString()} and ${prod.max.toLocaleString()}`;
+    errBox.textContent = `Quantity must be between ${prod.min} and ${prod.max}`;
     errBox.classList.add('visible'); navigator.vibrate?.(150); return;
   }
   if(!ref){
-    errBox.textContent = 'Referral link required'; errBox.classList.add('visible'); navigator.vibrate?.(150); return;
+    errBox.textContent="Referral link required";
+    errBox.classList.add('visible'); navigator.vibrate?.(150);
+    return;
   }
 
   const userId = sessionStorage.getItem('sv_user_id');
-  if(!userId){ showToast('error','Please login to place an order.'); return; }
+  if(!userId){ showToast("error","Please login"); return; }
 
   const price = Number((qty * prod.pricePerUnit).toFixed(2));
+
   btn.disabled = true;
-  const prevText = btn.innerText;
+  const original = btn.innerHTML;
   btn.innerHTML = `<span class="spinner"></span> Placing order...`;
 
   try{
-    const res = await fetch(`https://bbblacksmith.pythonanywhere.com/place-order`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({user_id:userId, product:prod.title, qty, price})
+    const res = await fetch(`${API}/place-order`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({user_id:userId,product:prod.title,qty,price})
     });
     const body = await parseResponseBody(res);
+
     if(res.ok && body.success){
-      if(typeof body.new_balance !== 'undefined'){
+      if(body.new_balance !== undefined)
         sessionStorage.setItem('sv_balance', body.new_balance);
-      } else {
-        await loadDashboard();
-      }
-      showToast('success','Order placed successfully!');
-      setTimeout(()=>{ refreshUI(); closeModal(); },500);
+
+      showToast("success","Order placed!");
+      setTimeout(()=>{ closeModal(); loadDashboard(); },600);
     } else {
-      const msg = (body && (body.error || body.message)) || `Status ${res.status}`;
-      errBox.textContent = msg; errBox.classList.add('visible'); navigator.vibrate?.(180);
+      errBox.textContent = body.error || "Failed";
+      errBox.classList.add("visible");
+      navigator.vibrate?.(180);
     }
-  } catch(e){
-    console.error('Order error', e);
-    errBox.textContent = 'Order network/error — try again.'; errBox.classList.add('visible'); navigator.vibrate?.(200);
-  } finally {
-    btn.disabled = false; btn.innerText = prevText;
+  }catch(e){
+    errBox.textContent="Network error";
+    errBox.classList.add("visible");
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML = original;
   }
 };
-      const body = await parseResponseBody(res);
-      if(res.ok && body.payment_url){
-  // show spinner modal and then redirect
-  const cbtn = $('#createPaymentBtn');
-  if(cbtn){ cbtn.disabled = true; cbtn.innerHTML = `<span class="spinner"></span> Redirecting...`; }
-  showRedirectBox();
-  setTimeout(()=>{ window.location.href = body.payment_url; }, 900);
-} else {
-  const msg = (body && (body.error || body.message)) || `Status ${res.status}`;
-  errBox.textContent = msg; errBox.classList.add('visible'); navigator.vibrate?.(180);
-      } else {
-        showDetailedError('Create payment', body, res.status);
-      }
-    } catch(e){
-      console.error('Create-payment error', e);
-      alert('Payment network/error — check console.');
-    }
+
+
+// --------------------- ADD FUNDS ---------------------
+function openAddFunds(){
+  $("#modal-container").innerHTML = `
+    <div class="modal-backdrop" onclick="closeModal(event)">
+      <div class="modal" onclick="event.stopPropagation()">
+        <h2>Add Funds</h2>
+        <input id="fund_amt" class="field" type="number" placeholder="Enter amount (₹)">
+        <div id="fund_err" class="error-text"></div>
+        <button class="btn" onclick="startOxaPay()">Proceed to Pay</button>
+      </div>
+    </div>
+  `;
+}
+
+
+// --------------------- OXAPAY PAYMENT (FIXED) ---------------------
+window.startOxaPay = async function(){
+  const amt = Number($('#fund_amt').value)||0;
+  const err = $('#fund_err');
+
+  err.classList.remove('visible');
+
+  if(amt < 50){
+    err.textContent="Minimum add funds: ₹50";
+    err.classList.add('visible');
+    return;
   }
 
-  // ---------------- REFRESH UI ----------------
-  function refreshUI(){
-    const userId = sessionStorage.getItem('sv_user_id');
-    if(userId){
-      $('#nav-signin').style.display='none';
-      $('#nav-signup').style.display='none';
-      showSection('dashboard');
-      loadDashboard();
+  const userId = sessionStorage.getItem('sv_user_id');
+  if(!userId){ showToast("error","Login required"); return; }
+
+  try{
+    const res = await fetch(`${API}/create-payment`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({user_id:userId,amount:amt})
+    });
+
+    const body = await parseResponseBody(res);
+
+    if(res.ok){
+      showToast("success","Redirecting...");
+      setTimeout(()=>{ location.href = body.payment_url; },600);
     } else {
-      $('#nav-signin').style.display='inline-block';
-      $('#nav-signup').style.display='inline-block';
-      showSection('home');
+      err.textContent = body.error || "Payment failed";
+      err.classList.add("visible");
     }
+  }catch(e){
+    err.textContent="Network error";
+    err.classList.add("visible");
   }
+};
 
-  window.showSection = function(id){
-    document.querySelectorAll('main section').forEach(s=>s.style.display='none');
-    const sec = document.getElementById(id);
-    if(sec) sec.style.display='block';
-  }
-
-  // Initial load
-  window.addEventListener('load',()=>{
-    renderProducts();
-    refreshUI();
-    setTimeout(()=>{document.getElementById('loader').style.display='none'},500);
-  });
-
-})();
 </script>
 
 </body>
